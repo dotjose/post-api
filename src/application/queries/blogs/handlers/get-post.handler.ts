@@ -2,7 +2,7 @@ import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { Inject, Logger, NotFoundException } from "@nestjs/common";
 import { PostRepository } from "domain/post.repository";
 import { EventProps, PostProps } from "domain/post.entity";
-import { GetPostQuery } from "./get-post.query";
+import { GetPostQuery } from "../get-post.query";
 
 @QueryHandler(GetPostQuery)
 export class GetPostHandler implements IQueryHandler<GetPostQuery> {

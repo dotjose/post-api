@@ -1,21 +1,19 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { Inject, Logger } from "@nestjs/common";
-import { GetEventsQuery } from "./get-events.query";
+import { GetPostsQuery } from "../get-posts.query";
 import { PostRepository } from "domain/post.repository";
-import { EventProps } from "domain/post.entity";
+import { PostProps } from "domain/post.entity";
 import { PaginatedResultDTO } from "presentation/dtos/common.dto";
 
-@QueryHandler(GetEventsQuery)
-export class GetEventsHandler implements IQueryHandler<GetEventsQuery> {
-  private readonly logger = new Logger(GetEventsHandler.name);
+@QueryHandler(GetPostsQuery)
+export class GetPostsHandler implements IQueryHandler<GetPostsQuery> {
+  private readonly logger = new Logger(GetPostsHandler.name);
 
   constructor(
     @Inject("PostRepository") private readonly postRepository: PostRepository
   ) {}
 
-  async execute(
-    query: GetEventsQuery
-  ): Promise<PaginatedResultDTO<EventProps>> {
+  async execute(query: GetPostsQuery): Promise<PaginatedResultDTO<PostProps>> {
     const { page = 1, limit = 10 } = query;
 
     // Logging the received query parameters
@@ -24,7 +22,7 @@ export class GetEventsHandler implements IQueryHandler<GetEventsQuery> {
     );
 
     // Fetching blogs with pagination
-    const posts = await this.postRepository.findEvents(page, limit);
+    const posts = await this.postRepository.findBlogs(page, limit);
 
     // Log the number of fetched posts
     this.logger.log(`Fetched ${posts.length} blog(s) for page ${page}`);
@@ -37,7 +35,7 @@ export class GetEventsHandler implements IQueryHandler<GetEventsQuery> {
     return paginatedResults;
   }
 
-  private paginateResults(posts: EventProps[], page: number, limit: number) {
+  private paginateResults(posts: PostProps[], page: number, limit: number) {
     const totalPages = Math.ceil(posts.length / limit);
     this.logger.debug(`Total pages: ${totalPages}`);
     return {

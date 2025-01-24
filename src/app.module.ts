@@ -5,18 +5,18 @@ import { CqrsModule } from "@nestjs/cqrs";
 import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
 
 // Command Handlers
-import { CreatePostHandler } from "./application/commands/blogs/create-post.handler";
-import { UpdatePostHandler } from "application/commands/blogs/update-post.handler";
-import { DeletePostHandler } from "application/commands/blogs/delete-post.handler";
-import { CreateEventHandler } from "application/commands/events/create-event.handler";
+import { CreatePostHandler } from "./application/commands/blogs/handlers/create-post.handler";
+import { UpdatePostHandler } from "application/commands/blogs/handlers/update-post.handler";
+import { DeletePostHandler } from "application/commands/blogs/handlers/delete-post.handler";
+import { CreateEventHandler } from "application/commands/events/handlers/create-event.handler";
 
 // Query Handlers
-import { GetPostsHandler } from "./application/queries/blogs/get-posts.handler";
-import { GetPostHandler } from "application/queries/blogs/get-post.handler";
-import { GetPublishedPostsHandler } from "application/queries/blogs/get-published-posts.handler";
-import { GetEventsHandler } from "application/queries/events/get-events.handler";
-import { GetPublishedEventsHandler } from "application/queries/events/get-published-events.handler";
-import { UpdateEventHandler } from "application/commands/events/update-event.handler";
+import { GetPostsHandler } from "./application/queries/blogs/handlers/get-posts.handler";
+import { GetPostHandler } from "application/queries/blogs/handlers/get-post.handler";
+import { GetPublishedPostsHandler } from "application/queries/blogs/handlers/get-published-posts.handler";
+import { GetEventsHandler } from "application/queries/events/handlers/get-events.handler";
+import { GetPublishedEventsHandler } from "application/queries/events/handlers/get-published-events.handler";
+import { UpdateEventHandler } from "application/commands/events/handlers/update-event.handler";
 
 // Services
 import { AIService } from "infrastructure/services/openai.service";

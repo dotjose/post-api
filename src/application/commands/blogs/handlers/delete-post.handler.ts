@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { Inject, Logger } from "@nestjs/common";
-import { DeletePostCommand } from "./delete-post.command";
+import { DeletePostCommand } from "../delete-post.command";
 import { PostRepository } from "domain/post.repository";
 
 @CommandHandler(DeletePostCommand)

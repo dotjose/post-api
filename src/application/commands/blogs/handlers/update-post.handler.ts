@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { UpdatePostCommand } from "./update-post.command";
+import { UpdatePostCommand } from "../update-post.command";
 import { UpdateEntityService } from "application/services/update-entity.service";
 import { PostProps } from "domain/post.entity";
 

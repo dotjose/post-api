@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CreatePostCommand } from "./create-post.command";
+import { CreatePostCommand } from "../create-post.command";
 import { Inject, Logger } from "@nestjs/common";
 import { PostRepository } from "domain/post.repository";
 import { PostProps } from "domain/post.entity";
