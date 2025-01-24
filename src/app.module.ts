@@ -77,16 +77,13 @@ const services = [
       isGlobal: true, // Make configuration globally available
       cache: true, // Cache environment variables
     }),
-    MongooseModule.forRoot(
-      process.env.MONGODB_URI || "mongodb://localhost:27017/blog",
-      {
-        // MongoDB connection options for better reliability
-        retryWrites: true,
-        w: "majority",
-        retryAttempts: 5,
-        retryDelay: 1000,
-      }
-    ),
+    MongooseModule.forRoot(process.env.MONGODB_URI, {
+      // MongoDB connection options for better reliability
+      retryWrites: true,
+      w: "majority",
+      retryAttempts: 5,
+      retryDelay: 1000,
+    }),
     MongooseModule.forFeature([
       { name: PostDocument.name, schema: PostSchema },
     ]),
