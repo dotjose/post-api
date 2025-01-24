@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CreateEventCommand } from "./create-event.command";
+import { CreateEventCommand } from "../create-event.command";
 import { Inject, Logger } from "@nestjs/common";
 import { PostRepository } from "domain/post.repository";
 import { EventProps } from "domain/post.entity";

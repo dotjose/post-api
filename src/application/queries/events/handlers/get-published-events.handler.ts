@@ -3,7 +3,7 @@ import { Inject, Logger } from "@nestjs/common";
 import { PostRepository } from "domain/post.repository";
 import { EventProps } from "domain/post.entity";
 import { PaginatedResultDTO } from "presentation/dtos/common.dto";
-import { GetPublishedEventsQuery } from "./get-published-events.query";
+import { GetPublishedEventsQuery } from "../get-published-events.query";
 
 @QueryHandler(GetPublishedEventsQuery)
 export class GetPublishedEventsHandler

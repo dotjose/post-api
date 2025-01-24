@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { UpdateEventCommand } from "../events/update-event.command";
+import { UpdateEventCommand } from "../update-event.command";
 import { UpdateEntityService } from "application/services/update-entity.service";
 import { EventProps } from "domain/post.entity";
 
