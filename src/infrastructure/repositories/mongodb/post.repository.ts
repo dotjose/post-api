@@ -26,10 +26,27 @@ export class MongoPostRepository implements PostRepository {
     return PostMapper.toEntity(event) as Event;
   }
 
-  // Get all posts
-  async findAll(): Promise<(Blog | Event)[]> {
-    const posts = await this.postModel.find().lean();
-    return PostMapper.toEntities(posts as PostDocument[]);
+  // Get all posts (events, blogs)
+  async findAll(
+    page: number,
+    limit: number,
+    sort: Record<string, 1 | -1> = { updatedAt: -1 }
+  ): Promise<(PostProps | EventProps)[]> {
+    const posts = await this.postModel
+      .find({ isPublished: true })
+      .sort(sort)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
+
+    return posts.map((post) => {
+      if (post.type === "event") {
+        return new Event(post as EventProps).getProps();
+      } else if (post.type === "blog") {
+        return new Blog(post as PostProps).getProps();
+      }
+      throw new Error(`Unknown post type: ${post.type}`);
+    });
   }
 
   // Get all blogs only (paginated, filterable, and sortable)
@@ -69,6 +86,30 @@ export class MongoPostRepository implements PostRepository {
   // Get all published blogs (paginated)
   async findPublishedBlogs(page: number, limit: number): Promise<PostProps[]> {
     return this.findBlogs(page, limit, { isPublished: true });
+  }
+
+  // Get all my events (paginated)
+  async findEventsByCreatorId(
+    page: number,
+    limit: number,
+    creatorId: string,
+    filters?: Partial<EventProps>,
+    sort?: Record<string, 1 | -1>
+  ): Promise<EventProps[]> {
+    const query = { ...filters, authorId: creatorId };
+    return this.findEvents(page, limit, query);
+  }
+
+  // Get all my events (paginated)
+  async findBlogsByCreatorId(
+    page: number,
+    limit: number,
+    creatorId: string,
+    filters?: Partial<EventProps>,
+    sort?: Record<string, 1 | -1>
+  ): Promise<PostProps[]> {
+    const query = { ...filters, authorId: creatorId };
+    return this.findBlogs(page, limit, query);
   }
 
   // Get all published events (paginated)

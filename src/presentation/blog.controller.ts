@@ -118,10 +118,11 @@ export class BlogController {
   async getBlogs(
     @Query("page", new ParseIntPipe({ optional: true })) page: number = 1,
     @Query("limit", new ParseIntPipe({ optional: true })) limit: number = 25,
+    @Query("creatorId") creatorId: string,
     @Query("search") search?: string,
     @Query("tags") tags?: string[]
   ): Promise<PostProps[]> {
-    const query = new GetPostsQuery(page, limit, search, tags);
+    const query = new GetPostsQuery(page, limit, creatorId, search, tags);
     return await this.queryBus.execute(query);
   }
 
@@ -150,10 +151,11 @@ export class BlogController {
   async getEvents(
     @Query("page", new ParseIntPipe({ optional: true })) page: number = 1,
     @Query("limit", new ParseIntPipe({ optional: true })) limit: number = 25,
+    @Query("creatorId") creatorId: string,
     @Query("search") search?: string,
     @Query("tags") tags?: string[]
   ): Promise<EventProps[]> {
-    const query = new GetEventsQuery(page, limit, search, tags);
+    const query = new GetEventsQuery(page, limit, creatorId, search, tags);
     return await this.queryBus.execute(query);
   }
 

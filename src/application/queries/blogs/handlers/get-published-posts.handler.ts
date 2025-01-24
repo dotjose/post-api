@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { Inject, Logger } from "@nestjs/common";
 import { PostRepository } from "domain/post.repository";
-import { PostProps } from "domain/post.entity";
+import { EventProps, PostProps } from "domain/post.entity";
 import { PaginatedResultDTO } from "presentation/dtos/common.dto";
 import { GetPublishedPostsQuery } from "../get-published-posts.query";
 
@@ -26,7 +26,7 @@ export class GetPublishedPostsHandler
     );
 
     // Fetching blogs with pagination
-    const posts = await this.postRepository.findPublishedBlogs(page, limit);
+    const posts = await this.postRepository.findAll(page, limit);
 
     // Log the number of fetched posts
     this.logger.log(`Fetched ${posts.length} blog(s) for page ${page}`);
@@ -39,7 +39,11 @@ export class GetPublishedPostsHandler
     return paginatedResults;
   }
 
-  private paginateResults(posts: PostProps[], page: number, limit: number) {
+  private paginateResults(
+    posts: PostProps[] | EventProps[],
+    page: number,
+    limit: number
+  ) {
     const totalPages = Math.ceil(posts.length / limit);
     this.logger.debug(`Total pages: ${totalPages}`);
     return {

@@ -8,7 +8,11 @@ export interface PostRepository {
   createEvent(post: Omit<EventProps, "type">): Promise<Event>;
 
   // Get all posts (both blogs and events)
-  findAll(): Promise<(Blog | Event)[]>;
+  findAll(
+    page: number,
+    limit: number,
+    sort?: Record<string, 1 | -1>
+  ): Promise<(PostProps | EventProps)[]>;
 
   // Get all blogs (paginated, filterable, and sortable)
   findBlogs(
@@ -25,6 +29,24 @@ export interface PostRepository {
     filters?: Partial<EventProps>,
     sort?: Record<string, 1 | -1>
   ): Promise<EventProps[]>;
+
+  // Get all events by creator Id (paginated, filterlable and sortable)
+  findEventsByCreatorId(
+    page: number,
+    limit: number,
+    creatorId: string,
+    filters?: Partial<EventProps>,
+    sort?: Record<string, 1 | -1>
+  );
+
+  // Get all blogs by creator Id (paginated, filterlable and sortable)
+  findBlogsByCreatorId(
+    page: number,
+    limit: number,
+    creatorId: string,
+    filters?: Partial<EventProps>,
+    sort?: Record<string, 1 | -1>
+  );
 
   // Get all published blogs (paginated)
   findPublishedBlogs(page: number, limit: number): Promise<PostProps[]>;

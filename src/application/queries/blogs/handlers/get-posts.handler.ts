@@ -14,7 +14,7 @@ export class GetPostsHandler implements IQueryHandler<GetPostsQuery> {
   ) {}
 
   async execute(query: GetPostsQuery): Promise<PaginatedResultDTO<PostProps>> {
-    const { page = 1, limit = 10 } = query;
+    const { page = 1, limit = 10, creatorId } = query;
 
     // Logging the received query parameters
     this.logger.log(
@@ -22,7 +22,11 @@ export class GetPostsHandler implements IQueryHandler<GetPostsQuery> {
     );
 
     // Fetching blogs with pagination
-    const posts = await this.postRepository.findBlogs(page, limit);
+    const posts = await this.postRepository.findBlogsByCreatorId(
+      page,
+      limit,
+      creatorId
+    );
 
     // Log the number of fetched posts
     this.logger.log(`Fetched ${posts.length} blog(s) for page ${page}`);

@@ -16,7 +16,7 @@ export class GetEventsHandler implements IQueryHandler<GetEventsQuery> {
   async execute(
     query: GetEventsQuery
   ): Promise<PaginatedResultDTO<EventProps>> {
-    const { page = 1, limit = 10 } = query;
+    const { page = 1, limit = 10, creatorId } = query;
 
     // Logging the received query parameters
     this.logger.log(
@@ -24,7 +24,11 @@ export class GetEventsHandler implements IQueryHandler<GetEventsQuery> {
     );
 
     // Fetching blogs with pagination
-    const posts = await this.postRepository.findEvents(page, limit);
+    const posts = await this.postRepository.findEventsByCreatorId(
+      page,
+      limit,
+      creatorId
+    );
 
     // Log the number of fetched posts
     this.logger.log(`Fetched ${posts.length} blog(s) for page ${page}`);
