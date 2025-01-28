@@ -109,7 +109,7 @@ export class BlogController {
     return await this.commandBus.execute(command);
   }
 
-  @Get("/blogs")
+  @Get("/blogs/draft")
   @ApiOperation({ summary: "Get all blog posts with pagination and search" })
   @ApiQuery({ name: "page", required: false, type: Number, example: 1 })
   @ApiQuery({ name: "limit", required: false, type: Number, example: 10 })
@@ -126,7 +126,7 @@ export class BlogController {
     return await this.queryBus.execute(query);
   }
 
-  @Get("blogs/published")
+  @Get("blogs")
   @ApiOperation({ summary: "Get all blog posts with pagination and search" })
   @ApiQuery({ name: "page", required: false, type: Number, example: 1 })
   @ApiQuery({ name: "limit", required: false, type: Number, example: 10 })
@@ -142,7 +142,7 @@ export class BlogController {
     return await this.queryBus.execute(query);
   }
 
-  @Get("/events")
+  @Get("/events/draft")
   @ApiOperation({ summary: "Get all blog posts with pagination and search" })
   @ApiQuery({ name: "page", required: false, type: Number, example: 1 })
   @ApiQuery({ name: "limit", required: false, type: Number, example: 10 })
@@ -159,7 +159,7 @@ export class BlogController {
     return await this.queryBus.execute(query);
   }
 
-  @Get("events/published")
+  @Get("events")
   @ApiOperation({ summary: "Get all blog posts with pagination and search" })
   @ApiQuery({ name: "page", required: false, type: Number, example: 1 })
   @ApiQuery({ name: "limit", required: false, type: Number, example: 10 })
