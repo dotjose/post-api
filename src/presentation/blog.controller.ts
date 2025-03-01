@@ -39,6 +39,7 @@ export class BlogController {
   async createBlog(@Body() createPostDto: CreatePostDto): Promise<PostProps> {
     const command = new CreatePostCommand(
       createPostDto.title,
+      createPostDto.subTitle,
       createPostDto.content,
       createPostDto.authorId,
       createPostDto.tags,
@@ -54,6 +55,7 @@ export class BlogController {
   ): Promise<EventProps> {
     const command = new CreateEventCommand(
       createEventDto.title,
+      createEventDto.subTitle,
       createEventDto.content,
       createEventDto.authorId,
       createEventDto.tags,
@@ -74,6 +76,7 @@ export class BlogController {
     const command = new UpdatePostCommand(
       id,
       updatePostDto.title,
+      updatePostDto.subTitle,
       updatePostDto.content,
       updatePostDto.tags,
       updatePostDto.featureImg,

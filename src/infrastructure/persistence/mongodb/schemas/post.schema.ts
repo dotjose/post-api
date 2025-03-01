@@ -10,13 +10,16 @@ export class PostDocument extends Document {
   title: string;
 
   @Prop({ required: true })
+  subTitle: string;
+
+  @Prop({ required: true })
   content: string;
 
   @Prop({ required: true })
   authorId: string;
 
-  @Prop()
-  featureImg?: string;
+  @Prop([String])
+  featureImg?: string[];
 
   @Prop()
   eventStart?: Date;
@@ -41,6 +44,9 @@ export class PostDocument extends Document {
       },
     },
     address: String,
+    country: String,
+    city: String,
+    state: String,
   })
   location?: {
     type?: "Point";

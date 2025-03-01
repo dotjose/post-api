@@ -21,6 +21,11 @@ export class CreateEventDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  subTitle: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   content: string;
 
   @ApiProperty()
@@ -51,8 +56,8 @@ export class CreateEventDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsUrl()
-  featureImg?: string;
+  @IsArray()
+  featureImg?: string[];
 }
 
 export class UpdateEventDto {
@@ -64,6 +69,11 @@ export class UpdateEventDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  subTitle: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   content: string;
 
   @ApiProperty()
@@ -94,8 +104,8 @@ export class UpdateEventDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsUrl()
-  featureImg?: string;
+  @IsArray()
+  featureImg?: string[];
 
   @ApiProperty()
   @IsOptional()

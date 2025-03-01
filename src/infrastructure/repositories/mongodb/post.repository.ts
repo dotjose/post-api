@@ -136,7 +136,7 @@ export class MongoPostRepository implements PostRepository {
     updatedProps: Partial<PostProps | EventProps>
   ): Promise<Blog | Event | null> {
     if (!id) throw new Error("Invalid ID");
-    console.log(updatedProps);
+
     const updatedPost = await this.postModel.findByIdAndUpdate(
       id,
       updatedProps

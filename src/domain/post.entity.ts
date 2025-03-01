@@ -3,10 +3,11 @@ import { AggregateRoot } from "@nestjs/cqrs";
 // Shared properties for all posts
 export interface PostProps {
   title: string;
+  subTitle: string;
   content: string;
   authorId: string;
   type: "blog" | "event";
-  featureImg?: string;
+  featureImg?: string[];
   tags?: string[];
   isPublished?: boolean;
 }

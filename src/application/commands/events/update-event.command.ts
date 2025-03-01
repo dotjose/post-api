@@ -9,7 +9,7 @@ export class UpdateEventCommand {
     public readonly eventStart: Date,
     public readonly eventEnd: Date,
     public location: LocationDto,
-    public readonly featureImg?: string,
+    public readonly featureImg?: string[],
     public readonly isPublished?: boolean
   ) {}
 }

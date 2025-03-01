@@ -3,7 +3,6 @@ import {
   IsArray,
   IsNotEmpty,
   IsOptional,
-  IsUrl,
   IsBoolean,
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
@@ -17,6 +16,11 @@ export class UpdatePostDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  subTitle: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   content: string;
 
   @ApiProperty({ type: [String] })
@@ -25,8 +29,8 @@ export class UpdatePostDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsUrl()
-  featureImg?: string;
+  @IsArray()
+  featureImg?: string[];
 
   @ApiProperty()
   @IsOptional()

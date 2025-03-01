@@ -1,10 +1,4 @@
-import {
-  IsString,
-  IsArray,
-  IsNotEmpty,
-  IsUrl,
-  IsOptional,
-} from "class-validator";
+import { IsString, IsArray, IsNotEmpty, IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreatePostDto {
@@ -12,6 +6,11 @@ export class CreatePostDto {
   @IsString()
   @IsNotEmpty()
   title: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  subTitle: string;
 
   @ApiProperty()
   @IsString()
@@ -28,7 +27,7 @@ export class CreatePostDto {
   tags: string[];
 
   @ApiProperty()
+  @IsArray()
   @IsOptional()
-  @IsUrl()
-  featureImg?: string;
+  featureImg?: string[];
 }
