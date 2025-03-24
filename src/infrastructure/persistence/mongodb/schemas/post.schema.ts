@@ -9,8 +9,8 @@ export class PostDocument extends Document {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true })
-  subTitle: string;
+  @Prop({ required: false })
+  subTitle?: string;
 
   @Prop({ required: true })
   content: string;

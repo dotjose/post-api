@@ -15,7 +15,7 @@ export class UpdatePostDto {
 
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   subTitle: string;
 
   @ApiProperty()
@@ -25,6 +25,7 @@ export class UpdatePostDto {
 
   @ApiProperty({ type: [String] })
   @IsArray()
+  @IsOptional()
   tags: string[];
 
   @ApiProperty()

@@ -9,7 +9,7 @@ export class CreatePostDto {
 
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   subTitle: string;
 
   @ApiProperty()
@@ -24,6 +24,7 @@ export class CreatePostDto {
 
   @ApiProperty({ type: [String] })
   @IsArray()
+  @IsOptional()
   tags: string[];
 
   @ApiProperty()
