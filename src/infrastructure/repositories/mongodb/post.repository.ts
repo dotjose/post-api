@@ -6,6 +6,7 @@ import { Blog, Event, PostProps, EventProps } from "domain/post.entity";
 import { PostRepository } from "domain/post.repository";
 import { PostDocument } from "infrastructure/persistence/mongodb/schemas/post.schema";
 import { PostMapper } from "infrastructure/mappers/post.mapper";
+import { PaginatedResultDTO } from "presentation/dtos/common.dto";
 
 @Injectable()
 export class MongoPostRepository implements PostRepository {
@@ -13,6 +14,36 @@ export class MongoPostRepository implements PostRepository {
     @InjectModel(PostDocument.name)
     private readonly postModel: Model<PostDocument>
   ) {}
+
+  private async paginatedQuery<T>(
+    query: any,
+    page: number,
+    limit: number,
+    sort: Record<string, 1 | -1>,
+    mapper: (doc: any) => T
+  ): Promise<PaginatedResultDTO<T>> {
+    // Validate pagination parameters
+    page = Math.max(1, page);
+    limit = Math.max(1, Math.min(limit, 100)); // Enforce reasonable limits
+
+    const [docs, total] = await Promise.all([
+      this.postModel
+        .find(query)
+        .sort(sort)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      this.postModel.countDocuments(query),
+    ]);
+
+    return {
+      items: docs.map(mapper),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
 
   // Create a blog
   async createBlog(props: Omit<PostProps, "type">): Promise<Blog> {
@@ -31,22 +62,21 @@ export class MongoPostRepository implements PostRepository {
     page: number,
     limit: number,
     sort: Record<string, 1 | -1> = { updatedAt: -1 }
-  ): Promise<(PostProps | EventProps)[]> {
-    const posts = await this.postModel
-      .find({ isPublished: true })
-      .sort(sort)
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean();
-
-    return posts.map((post) => {
-      if (post.type === "event") {
-        return new Event(post as EventProps).getProps();
-      } else if (post.type === "blog") {
-        return new Blog(post as PostProps).getProps();
+  ): Promise<PaginatedResultDTO<PostProps | EventProps>> {
+    return this.paginatedQuery(
+      { isPublished: true },
+      page,
+      limit,
+      sort,
+      (post) => {
+        if (post.type === "event") {
+          return new Event(post as EventProps).getProps();
+        } else if (post.type === "blog") {
+          return new Blog(post as PostProps).getProps();
+        }
+        throw new Error(`Unknown post type: ${post.type}`);
       }
-      throw new Error(`Unknown post type: ${post.type}`);
-    });
+    );
   }
 
   // Get all blogs only (paginated, filterable, and sortable)
@@ -55,15 +85,14 @@ export class MongoPostRepository implements PostRepository {
     limit: number,
     filters: Partial<PostProps> = {},
     sort: Record<string, 1 | -1> = { updatedAt: -1 }
-  ): Promise<PostProps[]> {
-    const query = { ...filters, type: "blog" };
-    const blogs = await this.postModel
-      .find(query)
-      .sort(sort)
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean();
-    return blogs.map((blog) => new Blog(blog as PostProps).getProps());
+  ): Promise<PaginatedResultDTO<PostProps>> {
+    return this.paginatedQuery(
+      { ...filters, type: "blog" },
+      page,
+      limit,
+      sort,
+      (blog) => new Blog(blog as PostProps).getProps()
+    );
   }
 
   // Get all events only (paginated, filterable, and sortable)
@@ -72,19 +101,21 @@ export class MongoPostRepository implements PostRepository {
     limit: number,
     filters: Partial<EventProps> = {},
     sort: Record<string, 1 | -1> = { createdAt: -1 }
-  ): Promise<EventProps[]> {
-    const query = { ...filters, type: "event" };
-    const events = await this.postModel
-      .find(query)
-      .sort(sort)
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean();
-    return events.map((event) => new Event(event as any).getProps());
+  ): Promise<PaginatedResultDTO<EventProps>> {
+    return this.paginatedQuery(
+      { ...filters, type: "event" },
+      page,
+      limit,
+      sort,
+      (event) => new Event(event as EventProps).getProps()
+    );
   }
 
   // Get all published blogs (paginated)
-  async findPublishedBlogs(page: number, limit: number): Promise<PostProps[]> {
+  async findPublishedBlogs(
+    page: number,
+    limit: number
+  ): Promise<PaginatedResultDTO<PostProps>> {
     return this.findBlogs(page, limit, { isPublished: true });
   }
 
@@ -95,9 +126,13 @@ export class MongoPostRepository implements PostRepository {
     creatorId: string,
     filters?: Partial<EventProps>,
     sort?: Record<string, 1 | -1>
-  ): Promise<EventProps[]> {
-    const query = { ...filters, authorId: creatorId };
-    return this.findEvents(page, limit, query);
+  ): Promise<PaginatedResultDTO<EventProps>> {
+    return this.findEvents(
+      page,
+      limit,
+      { ...filters, authorId: creatorId },
+      sort
+    );
   }
 
   // Get all my events (paginated)
@@ -105,18 +140,22 @@ export class MongoPostRepository implements PostRepository {
     page: number,
     limit: number,
     creatorId: string,
-    filters?: Partial<EventProps>,
+    filters?: Partial<PostProps>,
     sort?: Record<string, 1 | -1>
-  ): Promise<PostProps[]> {
-    const query = { ...filters, authorId: creatorId };
-    return this.findBlogs(page, limit, query);
+  ): Promise<PaginatedResultDTO<PostProps>> {
+    return this.findBlogs(
+      page,
+      limit,
+      { ...filters, authorId: creatorId },
+      sort
+    );
   }
 
   // Get all published events (paginated)
   async findPublishedEvents(
     page: number,
     limit: number
-  ): Promise<EventProps[]> {
+  ): Promise<PaginatedResultDTO<EventProps>> {
     return this.findEvents(page, limit, { isPublished: true });
   }
 

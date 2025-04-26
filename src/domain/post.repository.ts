@@ -1,3 +1,4 @@
+import { PaginatedResultDTO } from "presentation/dtos/common.dto";
 import { Blog, Event, EventProps, PostProps } from "./post.entity";
 
 export interface PostRepository {
@@ -12,7 +13,7 @@ export interface PostRepository {
     page: number,
     limit: number,
     sort?: Record<string, 1 | -1>
-  ): Promise<(PostProps | EventProps)[]>;
+  ): Promise<PaginatedResultDTO<PostProps | EventProps>>;
 
   // Get all blogs (paginated, filterable, and sortable)
   findBlogs(
@@ -20,7 +21,7 @@ export interface PostRepository {
     limit: number,
     filters?: Partial<PostProps>,
     sort?: Record<string, 1 | -1>
-  ): Promise<PostProps[]>;
+  ): Promise<PaginatedResultDTO<PostProps>>;
 
   // Get all events (paginated, filterable, and sortable)
   findEvents(
@@ -28,7 +29,7 @@ export interface PostRepository {
     limit: number,
     filters?: Partial<EventProps>,
     sort?: Record<string, 1 | -1>
-  ): Promise<EventProps[]>;
+  ): Promise<PaginatedResultDTO<EventProps>>;
 
   // Get all events by creator Id (paginated, filterlable and sortable)
   findEventsByCreatorId(
@@ -49,10 +50,16 @@ export interface PostRepository {
   );
 
   // Get all published blogs (paginated)
-  findPublishedBlogs(page: number, limit: number): Promise<PostProps[]>;
+  findPublishedBlogs(
+    page: number,
+    limit: number
+  ): Promise<PaginatedResultDTO<PostProps>>;
 
   // Get all published events (paginated)
-  findPublishedEvents(page: number, limit: number): Promise<EventProps[]>;
+  findPublishedEvents(
+    page: number,
+    limit: number
+  ): Promise<PaginatedResultDTO<EventProps>>;
 
   // Get a post by ID
   findById(id: string): Promise<Blog | Event | null>;

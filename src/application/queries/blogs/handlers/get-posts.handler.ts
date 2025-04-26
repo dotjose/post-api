@@ -2,8 +2,8 @@ import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { Inject, Logger } from "@nestjs/common";
 import { GetPostsQuery } from "../get-posts.query";
 import { PostRepository } from "domain/post.repository";
-import { PostProps } from "domain/post.entity";
 import { PaginatedResultDTO } from "presentation/dtos/common.dto";
+import { PostProps } from "domain/post.entity";
 
 @QueryHandler(GetPostsQuery)
 export class GetPostsHandler implements IQueryHandler<GetPostsQuery> {
@@ -16,38 +16,20 @@ export class GetPostsHandler implements IQueryHandler<GetPostsQuery> {
   async execute(query: GetPostsQuery): Promise<PaginatedResultDTO<PostProps>> {
     const { page = 1, limit = 10, creatorId } = query;
 
-    // Logging the received query parameters
     this.logger.log(
       `Executing GetPostsQuery with page: ${page}, limit: ${limit}`
     );
 
-    // Fetching blogs with pagination
-    const posts = await this.postRepository.findBlogsByCreatorId(
+    const result = await this.postRepository.findBlogsByCreatorId(
       page,
       limit,
       creatorId
     );
 
-    // Log the number of fetched posts
-    this.logger.log(`Fetched ${posts.length} blog(s) for page ${page}`);
+    this.logger.log(
+      `Fetched ${result.items.length} of ${result.total} blog(s) (page ${page}/${result.totalPages})`
+    );
 
-    // Paginate the results
-    this.logger.log(`Paginating results...`);
-    const paginatedResults = this.paginateResults(posts, page, limit);
-    this.logger.log(`Returning page ${page} of blogs`);
-
-    return paginatedResults;
-  }
-
-  private paginateResults(posts: PostProps[], page: number, limit: number) {
-    const totalPages = Math.ceil(posts.length / limit);
-    this.logger.debug(`Total pages: ${totalPages}`);
-    return {
-      items: posts.slice((page - 1) * limit, page * limit),
-      total: posts.length,
-      page,
-      limit,
-      totalPages,
-    };
+    return result;
   }
 }

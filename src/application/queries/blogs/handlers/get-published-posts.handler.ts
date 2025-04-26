@@ -17,7 +17,7 @@ export class GetPublishedPostsHandler
 
   async execute(
     query: GetPublishedPostsQuery
-  ): Promise<PaginatedResultDTO<PostProps>> {
+  ): Promise<PaginatedResultDTO<PostProps | EventProps>> {
     const { page = 1, limit = 10 } = query;
 
     // Logging the received query parameters
@@ -28,30 +28,10 @@ export class GetPublishedPostsHandler
     // Fetching blogs with pagination
     const posts = await this.postRepository.findAll(page, limit);
 
-    // Log the number of fetched posts
-    this.logger.log(`Fetched ${posts.length} blog(s) for page ${page}`);
+    this.logger.log(
+      `Fetched ${posts.items.length} of ${posts.total} blog(s) (page ${page}/${posts.totalPages})`
+    );
 
-    // Paginate the results
-    this.logger.log(`Paginating results...`);
-    const paginatedResults = this.paginateResults(posts, page, limit);
-    this.logger.log(`Returning page ${page} of blogs`);
-
-    return paginatedResults;
-  }
-
-  private paginateResults(
-    posts: PostProps[] | EventProps[],
-    page: number,
-    limit: number
-  ) {
-    const totalPages = Math.ceil(posts.length / limit);
-    this.logger.debug(`Total pages: ${totalPages}`);
-    return {
-      items: posts.slice((page - 1) * limit, page * limit),
-      total: posts.length,
-      page,
-      limit,
-      totalPages,
-    };
+    return posts;
   }
 }
