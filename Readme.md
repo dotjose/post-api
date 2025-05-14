@@ -1,5 +1,3 @@
-Sure! Here's a README for your AI-powered blog NestJS API:
-
 # AI-Powered Blog NestJS API
 
 This project is an AI-powered blog API built using NestJS. It leverages MongoDB for data storage, OpenAI for AI functionality, and Pinecone for vector database management.
