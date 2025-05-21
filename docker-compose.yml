@@ -8,6 +8,9 @@ services:
       - "3001:3001"
     environment:
       MONGODB_URI: mongodb://shared-mongodb:27017/posts
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      PINECONE_API_KEY: ${PINECONE_API_KEY}
+      PINECONE_ENVIRONMENT: ${PINECONE_ENVIRONMENT}
     networks:
       - shared-backend
 
