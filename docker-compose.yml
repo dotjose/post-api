@@ -4,8 +4,6 @@ services:
   api:
     build: .
     restart: unless-stopped
-    depends_on:
-      - mongodb  # optional
     ports:
       - "3001:3001"
     environment:
