@@ -12,16 +12,16 @@ export class AIService {
     this.openai = new OpenAI({
       apiKey: this.configService.get<string>("OPENAI_API_KEY"),
     });
-    this.initPinecone();
+    //this.initPinecone();
   }
 
-  private async initPinecone() {
-    this.pinecone = new PineconeClient();
-    await this.pinecone.init({
-      environment: this.configService.get<string>("PINECONE_ENVIRONMENT"),
-      apiKey: this.configService.get<string>("PINECONE_API_KEY"),
-    });
-  }
+  // private async initPinecone() {
+  //   this.pinecone = new PineconeClient();
+  //   await this.pinecone.init({
+  //     environment: this.configService.get<string>("PINECONE_ENVIRONMENT"),
+  //     apiKey: this.configService.get<string>("PINECONE_API_KEY"),
+  //   });
+  // }
 
   async generateBlogIdeas(topic: string, count: number = 5): Promise<string[]> {
     const response = await this.openai.chat.completions.create({
