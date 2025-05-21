@@ -7,7 +7,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      MONGODB_URI: mongodb://mongodb:27017/blog
+      MONGODB_URI: mongodb://shared-mongodb:27017/posts
     networks:
       - shared-backend
 
