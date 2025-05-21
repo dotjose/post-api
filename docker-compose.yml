@@ -21,8 +21,6 @@ services:
       - "3000:3000"
     environment:
       MONGODB_URI: mongodb://mongodb:27017/blog
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       PINECONE_API_KEY: ${PINECONE_API_KEY}
       PINECONE_ENVIRONMENT: ${PINECONE_ENVIRONMENT}
