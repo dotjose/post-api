@@ -36,8 +36,9 @@ async function bootstrap() {
 
     // Start the application
     const port = configService.get<number>("PORT") || 3000;
-    await app.listen(port, process.env.HOST || "0.0.0.0");
-    logger.log(`Application is running on: http://localhost:${port}`);
+    const host = configService.get<string>("HOST") || "0.0.0.0";
+    await app.listen(port, host);
+    logger.log(`Application is running on: http://${host}:${port}`);
   } catch (error) {
     console.error("Error during app initialization", error);
     process.exit(1); // Exit process with failure code
