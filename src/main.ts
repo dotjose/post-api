@@ -36,7 +36,7 @@ async function bootstrap() {
 
     // Start the application
     const port = configService.get<number>("PORT") || 3000;
-    await app.listen(port);
+    await app.listen(port, process.env.HOST || "0.0.0.0");
     logger.log(`Application is running on: http://localhost:${port}`);
   } catch (error) {
     console.error("Error during app initialization", error);
