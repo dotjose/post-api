@@ -29,7 +29,7 @@ export class MetricsService {
 
     try {
       // Record to CloudWatch
-      await this.cloudWatchService.putMetric("UserRating", duration, "Count", {
+      await this.cloudWatchService.putMetric("APIRating", duration, "Count", {
         Method: method,
         Path: path,
         StatusCode: status.toString(),

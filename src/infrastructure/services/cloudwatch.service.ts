@@ -12,16 +12,24 @@ export class CloudWatchService {
   private readonly namespace: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.client = new CloudWatchClient({
-      region: this.configService.get<string>("AWS_REGION"),
-      credentials: {
-        accessKeyId: this.configService.get<string>("AWS_ACCESS_KEY_ID"),
-        secretAccessKey: this.configService.get<string>(
-          "AWS_SECRET_ACCESS_KEY"
-        ),
-      },
-    });
-    this.namespace = "UserManagementService";
+    const region = this.configService.get<string>("AWS_REGION") || "us-east-1";
+    const accessKeyId = this.configService.get<string>("AWS_ACCESS_KEY_ID");
+    const secretAccessKey = this.configService.get<string>(
+      "AWS_SECRET_ACCESS_KEY"
+    );
+
+    if (accessKeyId && secretAccessKey) {
+      this.client = new CloudWatchClient({
+        region,
+        credentials: {
+          accessKeyId,
+          secretAccessKey,
+        },
+      });
+    } else {
+      this.client = new CloudWatchClient({ region });
+    }
+    this.namespace = "BlogManagementService";
   }
 
   async putMetric(
