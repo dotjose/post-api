@@ -24,9 +24,7 @@ services:
     networks:
       - shared-backend
     depends_on:
-      - healthcheck-mongo
-      - healthcheck-redis
-      - healthcheck-es
+      - shared-mongodb
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
       interval: 30s
