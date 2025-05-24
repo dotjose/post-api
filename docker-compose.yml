@@ -1,20 +1,6 @@
 version: "3.8"
 
 services:
-  shared-mongodb:
-    image: mongo:6.0
-    container_name: shared-mongodb
-    restart: unless-stopped
-    ports:
-      - "27017:27017"
-    networks:
-      - shared-backend
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   post-api:
     build:
       context: .
@@ -33,8 +19,6 @@ services:
       PINECONE_ENVIRONMENT: ${PINECONE_ENVIRONMENT}
       PORT: 3001
       HOST: 0.0.0.0
-    depends_on:
-      - shared-mongodb
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
       interval: 30s
@@ -47,7 +31,7 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    entrypoint: ["./wait-for-mongo.sh", "npm", "start"]  # see below for wait-for-mongo.sh script
+    entrypoint: ["./wait-for-mongo.sh", "npm", "start"]
 
 networks:
   shared-backend:
