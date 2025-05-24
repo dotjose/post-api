@@ -11,6 +11,8 @@ services:
       - "3001:3001"
     environment:
       MONGODB_URI: mongodb://shared-mongodb:27017/posts
+      REDIS_URL: redis://shared-redis:6379
+      ELASTICSEARCH_URL: http://shared-elasticsearch:9200
       WS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
@@ -19,18 +21,17 @@ services:
       PINECONE_ENVIRONMENT: ${PINECONE_ENVIRONMENT}
       PORT: 3001
       HOST: 0.0.0.0
+    networks:
+      - shared-backend
+    depends_on:
+      - healthcheck-mongo
+      - healthcheck-redis
+      - healthcheck-es
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-    networks:
-      - shared-backend
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
     entrypoint: ["./wait-for-mongo.sh", "npm", "start"]
 
 networks:
