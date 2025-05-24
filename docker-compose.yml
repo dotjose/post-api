@@ -1,23 +1,28 @@
 version: "3.8"
 
 services:
-  api:
-    build: .
+  post-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: post-api-app
     restart: unless-stopped
     ports:
       - "3001:3001"
-    environment:
-      MONGODB_URI: mongodb://shared-mongodb:27017/posts
-      WS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_REGION: ${AWS_REGION}
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      PINECONE_API_KEY: ${PINECONE_API_KEY}
-      PINECONE_ENVIRONMENT: ${PINECONE_ENVIRONMENT}
-      PORT: 3001
-      HOST: 0.0.0.0
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - shared-backend
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   shared-backend:
