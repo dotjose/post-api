@@ -30,6 +30,7 @@ import { UpdateEntityService } from "application/services/update-entity.service"
 import { BlogController } from "./presentation/blog.controller";
 import { AIController } from "./presentation/ai.controller";
 import { PrometheusController } from "infrastructure/monitoring/prometheus.controller";
+import { HealthController } from "infrastructure/health/health.controller";
 
 //Repositories
 import { MongoPostRepository } from "./infrastructure/repositories/mongodb/post.repository";
@@ -61,7 +62,12 @@ const queryHandlers = [
   GetEventsHandler,
   GetPublishedEventsHandler,
 ];
-const controllers = [BlogController, AIController, PrometheusController];
+const controllers = [
+  BlogController,
+  AIController,
+  PrometheusController,
+  HealthController,
+];
 const services = [
   AIService,
   CloudWatchService,
