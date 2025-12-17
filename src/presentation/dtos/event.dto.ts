@@ -20,7 +20,7 @@ export class CreateEventDto {
 
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   subTitle: string;
 
   @ApiProperty()
@@ -68,7 +68,7 @@ export class UpdateEventDto {
 
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   subTitle: string;
 
   @ApiProperty()
