@@ -14,8 +14,8 @@ export class FileUploadService {
     this.s3Client = new S3Client({
       region: this.config.getOrThrow<string>('AWS_REGION'),
       credentials: {
-        accessKeyId: this.config.getOrThrow<string>('ACCESS_KEY'),
-        secretAccessKey: this.config.getOrThrow<string>('SECRET_KEY'),
+        accessKeyId: this.config.getOrThrow<string>('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: this.config.getOrThrow<string>('AWS_SECRET_ACCESS_KEY'),
       },
     });
     this.bucketName = this.config.getOrThrow<string>('AWS_S3_BUCKET');
