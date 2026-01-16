@@ -9,6 +9,7 @@ import { CreatePostHandler } from "./application/commands/blogs/handlers/create-
 import { UpdatePostHandler } from "application/commands/blogs/handlers/update-post.handler";
 import { DeletePostHandler } from "application/commands/blogs/handlers/delete-post.handler";
 import { CreateEventHandler } from "application/commands/events/handlers/create-event.handler";
+import { UploadFileHandler } from "application/commands/file/handlers/upload-file.handler";
 
 // Query Handlers
 import { GetPostsHandler } from "./application/queries/blogs/handlers/get-posts.handler";
@@ -25,6 +26,7 @@ import { MetricsService } from "infrastructure/monitoring/metrics.service";
 import { PrometheusService } from "infrastructure/monitoring/prometheus.service";
 import { DatabaseService } from "infrastructure/services/database.service";
 import { UpdateEntityService } from "application/services/update-entity.service";
+import { FileUploadService } from "infrastructure/services/file-upload.service";
 
 // Controllers
 import { BlogController } from "./presentation/blog.controller";
@@ -54,6 +56,7 @@ const commandHandlers = [
   DeletePostHandler,
   CreateEventHandler,
   UpdateEventHandler,
+  UploadFileHandler,
 ];
 const queryHandlers = [
   GetPostsHandler,
@@ -75,6 +78,7 @@ const services = [
   PrometheusService,
   DatabaseService,
   UpdateEntityService,
+  FileUploadService,
 ];
 
 @Module({

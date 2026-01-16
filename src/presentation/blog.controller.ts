@@ -10,7 +10,7 @@ import {
   Patch,
 } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { ApiTags, ApiOperation, ApiQuery } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiQuery, ApiBody, ApiResponse } from "@nestjs/swagger";
 import { CreatePostDto } from "./dtos/create-post.dto";
 import { UpdatePostDto } from "./dtos/update-post.dto";
 import { CreatePostCommand } from "application/commands/blogs/create-post.command";
@@ -25,6 +25,8 @@ import { CreateEventCommand } from "application/commands/events/create-event.com
 import { UpdateEventCommand } from "application/commands/events/update-event.command";
 import { GetEventsQuery } from "application/queries/events/get-events.query";
 import { GetPublishedEventsQuery } from "application/queries/events/get-published-events.query";
+import { UploadFileCommand } from "application/commands/file/upload-file.command";
+import { CreateSignedUrlDto, SignedUrlResponseDto } from "./dtos/common.dto";
 
 @ApiTags("posts")
 @Controller("posts")
@@ -33,6 +35,16 @@ export class BlogController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus
   ) {}
+
+  @Post('signed-url')
+  @ApiOperation({ summary: 'Generate a signed URL for direct S3 upload' })
+  @ApiBody({ type: CreateSignedUrlDto })
+  @ApiResponse({ status: 201, type: SignedUrlResponseDto })
+  @ApiResponse({ status: 403, description: 'Insufficient permissions' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  async createSignedUrl(@Body() body: CreateSignedUrlDto): Promise<SignedUrlResponseDto> {
+    return this.commandBus.execute(new UploadFileCommand(body));
+  }
 
   @Post("/blogs")
   @ApiOperation({ summary: "Create a new blog post" })

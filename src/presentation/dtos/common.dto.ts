@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsOptional,
   IsString,
@@ -8,6 +8,30 @@ import {
   ArrayMaxSize,
   IsNumber,
 } from "class-validator";
+
+export class SignedUrlResponseDto {
+  @ApiProperty({ description: 'Pre-signed URL for direct upload' })
+  uploadUrl!: string;
+
+  @ApiProperty({ description: 'Key of the uploaded file in S3' })
+  key!: string;
+}
+
+export class CreateSignedUrlDto {
+  @ApiProperty({ example: 'image/jpeg' })
+  @IsString()
+  mimeType!: string;
+
+  @ApiProperty({ example: 'photo.jpg' })
+  @IsString()
+  originalName!: string;
+
+  @ApiProperty({ example: 'cms', required: false })
+  @IsOptional()
+  @IsString()
+  folder?: string;
+}
+
 
 export interface PaginatedResultDTO<T> {
   items: T[];
