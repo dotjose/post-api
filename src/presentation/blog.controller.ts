@@ -23,6 +23,9 @@ import { GetPublishedPostsQuery } from "application/queries/blogs/get-published-
 import { CreateEventDto, UpdateEventDto } from "./dtos/event.dto";
 import { CreateEventCommand } from "application/commands/events/create-event.command";
 import { UpdateEventCommand } from "application/commands/events/update-event.command";
+import { RemovePostsByUserCommand } from "application/commands/blogs/remove-posts-by-user.command";
+import { GetAllBlogsQuery } from "application/queries/blogs/get-all-blogs.query";
+import { GetAllEventsQuery } from "application/queries/events/get-all-events.query";
 import { GetEventsQuery } from "application/queries/events/get-events.query";
 import { GetPublishedEventsQuery } from "application/queries/events/get-published-events.query";
 import { UploadFileCommand } from "application/commands/file/upload-file.command";
@@ -34,7 +37,7 @@ export class BlogController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus
-  ) {}
+  ) { }
 
   @Post('signed-url')
   @ApiOperation({ summary: 'Generate a signed URL for direct S3 upload' })
@@ -124,6 +127,13 @@ export class BlogController {
     return await this.commandBus.execute(command);
   }
 
+  @Delete("/all/:userId")
+  @ApiOperation({ summary: "Delete all posts for a specific user" })
+  async deleteAllJobsByUser(@Param("userId") userId: string) {
+    const command = new RemovePostsByUserCommand(userId);
+    return await this.commandBus.execute(command);
+  }
+
   @Get("/blogs/draft")
   @ApiOperation({ summary: "Get all blog posts with pagination and search" })
   @ApiQuery({ name: "page", required: false, type: Number, example: 1 })
@@ -138,6 +148,38 @@ export class BlogController {
     @Query("tags") tags?: string[]
   ): Promise<PostProps[]> {
     const query = new GetPostsQuery(page, limit, creatorId, search, tags);
+    return await this.queryBus.execute(query);
+  }
+
+  @Get("all/blogs")
+  @ApiOperation({ summary: "Get all blog posts with pagination and search" })
+  @ApiQuery({ name: "page", required: false, type: Number, example: 1 })
+  @ApiQuery({ name: "limit", required: false, type: Number, example: 25 })
+  @ApiQuery({ name: "search", required: false, type: String })
+  @ApiQuery({ name: "sort", required: false, type: String })
+  async getAllBlogs(
+    @Query("page", new ParseIntPipe({ optional: true })) page: number = 1,
+    @Query("limit", new ParseIntPipe({ optional: true })) limit: number = 25,
+    @Query("search") search?: string,
+    @Query("sort") sort?: string
+  ) {
+    const query = new GetAllBlogsQuery(page, limit, search, sort);
+    return await this.queryBus.execute(query);
+  }
+
+  @Get("all/events")
+  @ApiOperation({ summary: "Get all events with pagination and search" })
+  @ApiQuery({ name: "page", required: false, type: Number, example: 1 })
+  @ApiQuery({ name: "limit", required: false, type: Number, example: 25 })
+  @ApiQuery({ name: "search", required: false, type: String })
+  @ApiQuery({ name: "sort", required: false, type: String })
+  async getAllEvents(
+    @Query("page", new ParseIntPipe({ optional: true })) page: number = 1,
+    @Query("limit", new ParseIntPipe({ optional: true })) limit: number = 25,
+    @Query("search") search?: string,
+    @Query("sort") sort?: string
+  ) {
+    const query = new GetAllEventsQuery(page, limit, search, sort);
     return await this.queryBus.execute(query);
   }
 

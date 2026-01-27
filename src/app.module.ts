@@ -10,6 +10,7 @@ import { UpdatePostHandler } from "application/commands/blogs/handlers/update-po
 import { DeletePostHandler } from "application/commands/blogs/handlers/delete-post.handler";
 import { CreateEventHandler } from "application/commands/events/handlers/create-event.handler";
 import { UploadFileHandler } from "application/commands/file/handlers/upload-file.handler";
+import { RemovePostsByUserHandler } from "./application/commands/blogs/handlers/remove-posts-by-user.handler";
 
 // Query Handlers
 import { GetPostsHandler } from "./application/queries/blogs/handlers/get-posts.handler";
@@ -18,6 +19,8 @@ import { GetPublishedPostsHandler } from "application/queries/blogs/handlers/get
 import { GetEventsHandler } from "application/queries/events/handlers/get-events.handler";
 import { GetPublishedEventsHandler } from "application/queries/events/handlers/get-published-events.handler";
 import { UpdateEventHandler } from "application/commands/events/handlers/update-event.handler";
+import { GetAllBlogsHandler } from "./application/queries/blogs/handlers/get-all-blogs.handler";
+import { GetAllEventsHandler } from "./application/queries/events/handlers/get-all-events.handler";
 
 // Services
 import { AIService } from "infrastructure/services/openai.service";
@@ -57,6 +60,7 @@ const commandHandlers = [
   CreateEventHandler,
   UpdateEventHandler,
   UploadFileHandler,
+  RemovePostsByUserHandler,
 ];
 const queryHandlers = [
   GetPostsHandler,
@@ -64,6 +68,8 @@ const queryHandlers = [
   GetPublishedPostsHandler,
   GetEventsHandler,
   GetPublishedEventsHandler,
+  GetAllBlogsHandler,
+  GetAllEventsHandler,
 ];
 const controllers = [
   BlogController,
@@ -129,4 +135,4 @@ const services = [
     ...queryHandlers,
   ],
 })
-export class AppModule {}
+export class AppModule { }

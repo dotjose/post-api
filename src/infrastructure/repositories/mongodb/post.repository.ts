@@ -13,7 +13,7 @@ export class MongoPostRepository implements PostRepository {
   constructor(
     @InjectModel(PostDocument.name)
     private readonly postModel: Model<PostDocument>
-  ) {}
+  ) { }
 
   private async paginatedQuery<T>(
     query: any,
@@ -61,10 +61,19 @@ export class MongoPostRepository implements PostRepository {
   async findAll(
     page: number,
     limit: number,
+    search?: string,
     sort: Record<string, 1 | -1> = { updatedAt: -1 }
   ): Promise<PaginatedResultDTO<PostProps | EventProps>> {
+    const query: any = {};
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { content: { $regex: search, $options: "i" } },
+      ];
+    }
+
     return this.paginatedQuery(
-      { isPublished: true },
+      query,
       page,
       limit,
       sort,
@@ -83,11 +92,20 @@ export class MongoPostRepository implements PostRepository {
   async findBlogs(
     page: number,
     limit: number,
+    search?: string,
     filters: Partial<PostProps> = {},
     sort: Record<string, 1 | -1> = { updatedAt: -1 }
   ): Promise<PaginatedResultDTO<PostProps>> {
+    const query: any = { ...filters, type: "blog" };
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { content: { $regex: search, $options: "i" } },
+      ];
+    }
+
     return this.paginatedQuery(
-      { ...filters, type: "blog" },
+      query,
       page,
       limit,
       sort,
@@ -99,11 +117,20 @@ export class MongoPostRepository implements PostRepository {
   async findEvents(
     page: number,
     limit: number,
+    search?: string,
     filters: Partial<EventProps> = {},
     sort: Record<string, 1 | -1> = { createdAt: -1 }
   ): Promise<PaginatedResultDTO<EventProps>> {
+    const query: any = { ...filters, type: "event" };
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { content: { $regex: search, $options: "i" } },
+      ];
+    }
+
     return this.paginatedQuery(
-      { ...filters, type: "event" },
+      query,
       page,
       limit,
       sort,
@@ -116,7 +143,7 @@ export class MongoPostRepository implements PostRepository {
     page: number,
     limit: number
   ): Promise<PaginatedResultDTO<PostProps>> {
-    return this.findBlogs(page, limit, { isPublished: true });
+    return this.findBlogs(page, limit, undefined, { isPublished: true });
   }
 
   // Get all my events (paginated)
@@ -130,6 +157,7 @@ export class MongoPostRepository implements PostRepository {
     return this.findEvents(
       page,
       limit,
+      undefined,
       { ...filters, authorId: creatorId },
       sort
     );
@@ -146,6 +174,7 @@ export class MongoPostRepository implements PostRepository {
     return this.findBlogs(
       page,
       limit,
+      undefined,
       { ...filters, authorId: creatorId },
       sort
     );
@@ -156,7 +185,7 @@ export class MongoPostRepository implements PostRepository {
     page: number,
     limit: number
   ): Promise<PaginatedResultDTO<EventProps>> {
-    return this.findEvents(page, limit, { isPublished: true });
+    return this.findEvents(page, limit, undefined, { isPublished: true });
   }
 
   // Get a post by ID
@@ -191,5 +220,13 @@ export class MongoPostRepository implements PostRepository {
 
     const result = await this.postModel.findByIdAndDelete(id);
     return !!result;
+  }
+
+  // Bulk delete posts by author
+  async deleteManyByAuthorId(authorId: string): Promise<number> {
+    if (!authorId) throw new Error("Invalid Author ID");
+
+    const result = await this.postModel.deleteMany({ authorId });
+    return result.deletedCount || 0;
   }
 }

@@ -12,6 +12,7 @@ export interface PostRepository {
   findAll(
     page: number,
     limit: number,
+    search?: string,
     sort?: Record<string, 1 | -1>
   ): Promise<PaginatedResultDTO<PostProps | EventProps>>;
 
@@ -19,6 +20,7 @@ export interface PostRepository {
   findBlogs(
     page: number,
     limit: number,
+    search?: string,
     filters?: Partial<PostProps>,
     sort?: Record<string, 1 | -1>
   ): Promise<PaginatedResultDTO<PostProps>>;
@@ -27,6 +29,7 @@ export interface PostRepository {
   findEvents(
     page: number,
     limit: number,
+    search?: string,
     filters?: Partial<EventProps>,
     sort?: Record<string, 1 | -1>
   ): Promise<PaginatedResultDTO<EventProps>>;
@@ -38,7 +41,7 @@ export interface PostRepository {
     creatorId: string,
     filters?: Partial<EventProps>,
     sort?: Record<string, 1 | -1>
-  );
+  ): Promise<PaginatedResultDTO<EventProps>>;
 
   // Get all blogs by creator Id (paginated, filterlable and sortable)
   findBlogsByCreatorId(
@@ -47,7 +50,7 @@ export interface PostRepository {
     creatorId: string,
     filters?: Partial<EventProps>,
     sort?: Record<string, 1 | -1>
-  );
+  ): Promise<PaginatedResultDTO<PostProps>>;
 
   // Get all published blogs (paginated)
   findPublishedBlogs(
@@ -72,4 +75,7 @@ export interface PostRepository {
 
   // Delete a post
   delete(id: string): Promise<boolean>;
+
+  // Bulk delete posts by author
+  deleteManyByAuthorId(authorId: string): Promise<number>;
 }
